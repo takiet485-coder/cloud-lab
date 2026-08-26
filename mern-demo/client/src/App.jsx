@@ -1,122 +1,107 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [students, setStudents] = useState([]);
+  const [form, setForm] = useState({ studentId: '', name: '', email: '' });
+
+  // Lấy danh sách sinh viên
+  const fetchStudents = async () => {
+    try {
+      const res = await fetch('/api/students');
+      const data = await res.json();
+      setStudents(data);
+    } catch (err) {
+      console.error('Lỗi lấy danh sách:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  // Xử lý Thêm sinh viên
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      if (res.ok) {
+        setForm({ studentId: '', name: '', email: '' });
+        fetchStudents();
+      } else {
+        alert('Lỗi khi thêm sinh viên (Trùng MSSV hoặc thiếu dữ liệu)');
+      }
+    } catch (err) {
+      console.error('Lỗi gửi form:', err);
+    }
+  };
+
+  // Xử lý Xóa sinh viên
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`/api/students/${id}`, { method: 'DELETE' });
+      fetchStudents();
+    } catch (err) {
+      console.error('Lỗi xóa:', err);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h2>Quản Lý Sinh Viên - MERN Stack</h2>
 
-      <div className="ticks"></div>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+        <input 
+          placeholder="MSSV" 
+          value={form.studentId} 
+          onChange={e => setForm({...form, studentId: e.target.value})} 
+          required 
+          style={{ marginRight: '10px' }}
+        />
+        <input 
+          placeholder="Họ và Tên" 
+          value={form.name} 
+          onChange={e => setForm({...form, name: e.target.value})} 
+          required 
+          style={{ marginRight: '10px' }}
+        />
+        <input 
+          placeholder="Email" 
+          value={form.email} 
+          onChange={e => setForm({...form, email: e.target.value})} 
+          required 
+          style={{ marginRight: '10px' }}
+        />
+        <button type="submit">Thêm Sinh Viên</button>
+      </form>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <table border="1" cellPadding="8" cellSpacing="0">
+        <thead>
+          <tr>
+            <th>MSSV</th>
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Thao Tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map(st => (
+            <tr key={st._id}>
+              <td>{st.studentId}</td>
+              <td>{st.name}</td>
+              <td>{st.email}</td>
+              <td>
+                <button onClick={() => handleDelete(st._id)}>Xóa</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-export default App
+export default App;
