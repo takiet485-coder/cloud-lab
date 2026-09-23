@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h2>Quản Lý Sinh Viên - MERN Stack</h2>
+      <h2>Quản Lý Sinh Viên - MERN Stack (v2.0)</h2>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
         <input 
