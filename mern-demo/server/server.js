@@ -16,6 +16,12 @@ mongoose.connect(mongoURI)
   .then(() => console.log('✅ Kết nối thành công đến MongoDB Atlas!'))
   .catch((err) => console.error('❌ Lỗi kết nối MongoDB:', err.message));
 
+// Route gốc: Tự động chuyển hướng về /api/students khi truy cập link chính
+app.get('/', (req, res) => {
+  res.redirect('/api/students');
+});
+
+// Route lấy danh sách tất cả sinh viên
 app.get('/api/students', async (req, res) => {
   try {
     const students = await Student.find();
@@ -25,6 +31,7 @@ app.get('/api/students', async (req, res) => {
   }
 });
 
+// Route thêm mới sinh viên
 app.post('/api/students', async (req, res) => {
   try {
     const newStudent = await Student.create(req.body);
@@ -34,6 +41,7 @@ app.post('/api/students', async (req, res) => {
   }
 });
 
+// Route cập nhật thông tin sinh viên theo ID
 app.put('/api/students/:id', async (req, res) => {
   try {
     const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -43,6 +51,7 @@ app.put('/api/students/:id', async (req, res) => {
   }
 });
 
+// Route xóa sinh viên theo ID
 app.delete('/api/students/:id', async (req, res) => {
   try {
     await Student.findByIdAndDelete(req.params.id);
