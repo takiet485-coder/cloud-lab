@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 
+// Khai báo URL Backend trên Render
+const API_URL = 'https://mern-backend-takiet.onrender.com/api/students';
+
 function App() {
   const [students, setStudents] = useState([]);
   const [form, setForm] = useState({ studentId: '', name: '', email: '' });
@@ -7,7 +10,7 @@ function App() {
   // Lấy danh sách sinh viên
   const fetchStudents = async () => {
     try {
-      const res = await fetch('/api/students');
+      const res = await fetch(API_URL);
       const data = await res.json();
       setStudents(data);
     } catch (err) {
@@ -23,7 +26,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/students', {
+      const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -42,7 +45,7 @@ function App() {
   // Xử lý Xóa sinh viên
   const handleDelete = async (id) => {
     try {
-      await fetch(`/api/students/${id}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
       fetchStudents();
     } catch (err) {
       console.error('Lỗi xóa:', err);
