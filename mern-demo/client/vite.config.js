@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://backend:5000',
+        target: 'https://humble-capybara-69qjv6q975r9fx4r-5000.app.github.dev',
         changeOrigin: true,
         secure: false,
       }

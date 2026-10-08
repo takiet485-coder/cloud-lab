@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
-const Student = require('./Student'); // Import Model Student
+const Student = require('./Student');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,13 +11,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Kết nối MongoDB Atlas
 const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI)
   .then(() => console.log('✅ Kết nối thành công đến MongoDB Atlas!'))
   .catch((err) => console.error('❌ Lỗi kết nối MongoDB:', err.message));
 
-// Câu 36: GET /api/students (Lấy danh sách sinh viên)
 app.get('/api/students', async (req, res) => {
   try {
     const students = await Student.find();
@@ -27,7 +25,6 @@ app.get('/api/students', async (req, res) => {
   }
 });
 
-// Câu 37: POST /api/students (Thêm sinh viên mới)
 app.post('/api/students', async (req, res) => {
   try {
     const newStudent = await Student.create(req.body);
@@ -37,7 +34,6 @@ app.post('/api/students', async (req, res) => {
   }
 });
 
-// Câu 38: PUT /api/students/:id (Cập nhật sinh viên)
 app.put('/api/students/:id', async (req, res) => {
   try {
     const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -47,7 +43,6 @@ app.put('/api/students/:id', async (req, res) => {
   }
 });
 
-// Câu 39: DELETE /api/students/:id (Xóa sinh viên)
 app.delete('/api/students/:id', async (req, res) => {
   try {
     await Student.findByIdAndDelete(req.params.id);
