@@ -1,5 +1,4 @@
 ﻿# Cloud Computing Laboratory
 Student Name: Ta Anh Kiet
 Student ID: 235022
-Class: Cloud01
-Additional documentation updated
+Class: DH23TIN05
